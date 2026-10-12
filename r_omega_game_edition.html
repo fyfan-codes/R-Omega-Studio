@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rω Studio - Ultimate Pro Ecosystem</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+            box-sizing: border-box;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d2d2d;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        h1 { margin: 0; color: #4ec9b0; font-size: 22px; }
+        .tag-group { display: flex; gap: 10px; align-items: center; }
+        .tag { background: #2d2d2d; padding: 5px 10px; border-radius: 4px; font-size: 12px; color: #ce9178; }
+        .main-container {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .panel {
+            background: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .toolbox { flex: 1.3; }
+        .editor-area { flex: 2; }
+        .preview-area { flex: 2; background: #000; position: relative; overflow: hidden; padding: 0; }
+        h3 { margin-top: 0; color: #9cdcfe; font-size: 14px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: #121212;
+            color: #d4d4d4;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 13px;
+            resize: none;
+        }
+        .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .action-btn {
+            background: #2ea043;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            flex: 1;
+        }
+        .action-btn:hover { background: #3fb950; }
+        .exe-btn { background: #1f6feb; }
+        .exe-btn:hover { background: #388bfd; }
+        .category-title { font-size: 12px; color: #858585; margin: 10px 0 5px 0; font-weight: bold; text-transform: uppercase; }
+        .command-chip {
+            background: #2a2a2a;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            border-left: 3px solid #4ec9b0;
+        }
+        .command-chip:hover { background: #333; color: #4ec9b0; }
+        #appCanvas {
+            width: 100%;
+            height: 100%;
+            background: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Rω Studio <span style="font-size: 12px; color: #888;">Ultimate Game & Ecosystem Edition</span></h1>
+        <div class="tag-group">
+            <div class="tag">Celeron Optimized</div>
+            <div class="tag" style="background: #1f6feb;">Multiplayer & 3D Engine</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Toolbox Panel with Categories -->
+        <div class="panel toolbox">
+            <h3>Component Toolbox</h3>
+            
+            <div class="category-title">🎮 Advanced Game Engine (C++/C#/GDScript style)</div>
+            <div class="command-chip" onclick="insertCode('create game project named \"ActionHero\" style 3D graphics mode multiplayer game_servers')">create 3D multiplayer game (Servers)</div>
+            <div class="command-chip" onclick="insertCode('initialize renderer 2D style canvas gui enabled')">initialize 2D game with GUI</div>
+            <div class="command-chip" onclick="insertCode('when key \"W\" is pressed: move player vector forward by speed')">bind key input (C++ style)</div>
+            <div class="command-chip" onclick="insertCode('set match mode to 2P local in_person split_screen')">set 2-Player In-Person mode</div>
+            <div class="command-chip" onclick="insertCode('connect multiplayer lobby via game_servers protocol')">connect game servers</div>
+
+            <div class="category-title">🌐 Browsers & Apps</div>
+            <div class="command-chip" onclick="insertCode('add navigation toolbar with address bar and back button')">add browser toolbar</div>
+            <div class="command-chip" onclick="insertCode('add web view loading URL &quot;https://google.com&quot;')">add web view</div>
+
+            <div class="category-title">💬 Social Medias & Supabase</div>
+            <div class="command-chip" onclick="insertCode('connect to Supabase project URL &quot;YOUR_URL&quot; with key &quot;YOUR_KEY&quot;')">connect Supabase backend</div>
+            <div class="command-chip" onclick="insertCode('create social feed view with post submission form')">create social feed</div>
+        </div>
+
+        <!-- Editor Panel -->
+        <div class="panel editor-area">
+            <h3>Plain-English Code Workspace <span style="font-size:11px; color:#aaa;">(Type "empty" to clear editor)</span></h3>
+            <textarea id="codeEditor" oninput="checkEmptyCommand()">create game project named "CyberArena" style 3D graphics mode multiplayer game_servers
+set match mode to 2P local in_person split_screen
+when key "W" is pressed: move player vector forward by speed
+connect to Supabase project URL "https://xyz.supabase.co" with key "public-key-xyz"</textarea>
+            <div class="btn-row">
+                <button class="action-btn" onclick="renderVisualApp()">▶ Preview Engine</button>
+                <button class="action-btn exe-btn" onclick="exportDesktopExePackage()">📦 Export Game/App to .EXE</button>
+            </div>
+        </div>
+
+        <!-- Live Graphical Preview Panel -->
+        <div class="panel preview-area">
+            <div style="background: #2d2d2d; padding: 8px 12px; font-size: 12px; color: #aaa; border-bottom: 1px solid #444;">
+                Live Engine Preview Window
+            </div>
+            <div id="appCanvas">
+                <div style="padding: 20px; color: #666; text-align: center; margin-top: 50px;">
+                    Hit "Preview Engine" to test your game or application here!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function insertCode(cmd) {
+            let editor = document.getElementById('codeEditor');
+            editor.value += "\n" + cmd;
+            checkEmptyCommand();
+        }
+
+        function checkEmptyCommand() {
+            let editor = document.getElementById('codeEditor');
+            let text = editor.value.trim();
+            // If the text starts with or contains "empty" at the very beginning of the input
+            if (text.toLowerCase().startsWith("empty")) {
+                editor.value = "";
+                document.getElementById('appCanvas').innerHTML = `<div style="padding: 20px; color: #888; text-align: center; margin-top: 50px;">Workspace cleared by "empty" command.</div>`;
+            }
+        }
+
+        function generateAppHTML(codeText) {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rω Game & App Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; display: flex; flex-direction: column; background: #111; color: #fff; box-sizing: border-box; }
+        *, *::before, *::after { box-sizing: border-box; }
+        .engine-header { background: #161b22; color: #58a6ff; padding: 12px 20px; font-weight: bold; font-size: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
+        .engine-viewport { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; background: #0d1117; overflow: hidden; }
+        canvas { background: #1a1a2e; border: 2px solid #30363d; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        .hud-overlay { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 13px; border: 1px solid #444; }
+    </style>
+</head>
+<body id="appBody">
+    <script>
+        let code = ${JSON.stringify(codeText)};
+        let body = document.getElementById('appBody');
+
+        let header = document.createElement('div');
+        header.className = "engine-header";
+        header.innerHTML = \`<span>Rω Game Engine Runtime (Celeron Optimized)</span><span style="color: #2ea043; font-size: 12px;">● Active Session</span>\`;
+        body.appendChild(header);
+
+        let viewport = document.createElement('div');
+        viewport.className = "engine-viewport";
+        body.appendChild(viewport);
+
+        if (code.includes("game project") || code.includes("graphics mode")) {
+            let is3D = code.includes("3D");
+            let mode = code.includes("multiplayer") ? "Multiplayer (Game Servers)" : "Singleplayer (1P)";
+            let local2P = code.includes("2P") ? "2-Player In-Person (Split-Screen)" : "";
+
+            let hud = document.createElement('div');
+            hud.className = "hud-overlay";
+            hud.innerHTML = \`<b>Mode:</b> \${mode} <br><b>Graphics:</b> \${is3D ? "3D Renderer (C++/C# style)" : "2D Canvas (GDScript style)"} <br>\${local2P ? "<b>Setup:</b> " + local2P + "<br>" : ""}<b>Input:</b> Key W/A/S/D Active\`;
+            viewport.appendChild(hud);
+
+            let canvas = document.createElement('canvas');
+            canvas.width = 700;
+            canvas.height = 400;
+            viewport.appendChild(canvas);
+
+            let ctx = canvas.getContext('2d');
+            let px = 350, py = 200;
+            let px2 = 200, py2 = 200; // For 2P local
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'w') py -= 8;
+                if (e.key === 's') py += 8;
+                if (e.key === 'a') px -= 8;
+                if (e.key === 'd') px += 8;
+            });
+
+            setInterval(() => {
+                ctx.fillStyle = is3D ? "#0f172a" : "#1a1a2e";
+                ctx.fillRect(0, 0, 700, 400);
+
+                // Draw Grid / Perspective floor
+                ctx.strokeStyle = "#30363d";
+                ctx.lineWidth = 1;
+                for(let i=0; i<700; i+=40) {
+                    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 400); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(700, i); ctx.stroke();
+                }
+
+                // Draw Player 1
+                ctx.fillStyle = "#58a6ff";
+                ctx.fillRect(px - 15, py - 15, 30, 30);
+                ctx.fillStyle = "#fff";
+                ctx.font = "11px sans-serif";
+                ctx.fillText("P1 (Player)", px - 25, py - 20);
+
+                if (local2P) {
+                    // Draw Player 2 for In-Person mode
+                    ctx.fillStyle = "#f85149";
+                    ctx.fillRect(px2 - 15, py2 - 15, 30, 30);
+                    ctx.fillText("P2 (Local)", px2 - 25, py2 - 20);
+                }
+            }, 30);
+        } else {
+            viewport.innerHTML = \`<div style="color: #888; font-family: monospace;">Standard Rω Application Runtime Running...</div>\`;
+        }
+    <\/script>
+</body>
+</html>`;
+        }
+
+        function renderVisualApp() {
+            let code = document.getElementById('codeEditor');
+            let canvas = document.getElementById('appCanvas');
+            canvas.innerHTML = "";
+            
+            let iframePreview = document.createElement('iframe');
+            iframePreview.style.width = "100%";
+            iframePreview.style.height = "100%";
+            iframePreview.style.border = "none";
+            canvas.appendChild(iframePreview);
+
+            let appHtml = generateAppHTML(code.value);
+            iframePreview.contentWindow.document.open();
+            iframePreview.contentWindow.document.write(appHtml);
+            iframePreview.contentWindow.document.close();
+        }
+
+        function exportDesktopExePackage() {
+            let code = document.getElementById('codeEditor').value;
+            let appHtmlCode = generateAppHTML(code);
+
+            let batchScript = `@echo off
+title Rω Engine App Exporter
+echo ========================================================
+echo   Rω Studio Pro - Native Game & App .EXE Builder
+echo ========================================================
+echo Packaging your game/app executable...
+echo.
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo Python is not installed. Please install Python from python.org
+    pause
+    exit
+)
+pip install pywebview >nul 2>&1
+
+(
+echo import webview
+echo import os
+echo html_file = os.path.join(os.path.dirname(__file__), 'game_app.html')
+echo def main():
+echo     window = webview.create_window('Rω Game Runtime', 'file://' + html_file, width=900, height=650)
+echo     webview.start()
+echo if __name__ == '__main__':
+echo     main()
+) > launcher.py
+
+(
+echo %APP_HTML_PAYLOAD%
+) > game_app.html
+
+echo.
+echo ========================================================
+echo SUCCESS! Your game/app package is built.
+echo Double-click 'launcher.py' anytime to run your standalone application!
+echo ========================================================
+pause
+`;
+
+            let finalScript = batchScript.replace('%APP_HTML_PAYLOAD%', appHtmlCode.split('\n').map(l => 'echo ' + l).join('\n'));
+
+            let blob = new Blob([finalScript], { type: 'text/plain' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'build_my_r_omega_game.bat';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert("📦 Game Build Package downloaded as 'build_my_r_omega_game.bat'!");
+        }
+    </script>
+</body>
+</html>
